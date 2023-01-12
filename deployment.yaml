@@ -1,0 +1,24 @@
+apiVersion: serving.knative.dev/v1 # Current version of Knative
+kind: Service
+metadata:
+  name: steven-talafous-com # The name of the app
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0" # Allow scale to Zero
+        autoscaling.knative.dev/maxScale: "1" # Maximum number of Pods allowed to auto-scale to
+    spec:
+      # The container concurrency defines how many active requests are sent to a single
+      # backend pod at a time. This configuration is important as it effects how well requests
+      # are load balanced over Pods. For a standard, non-blocking web applocation this can usually
+      # be rather high, ie 100. For GPU Inference however, this should usually be set to 1.
+      # GPU Inference only processes one request at a time, and one wants to avoid a queue being
+      # built up in the local pod instead of centrally in the Load Balancer.
+      containerConcurrency: 10 
+      containers:
+        - image: st-registry.tenant-5c610a-dev.lga1.ingress.coreweave.cloud/steven-talafous-com:2 # The URL to the image of the app
+          resources:
+            limits:
+              cpu: 2
+              memory: 4Gi

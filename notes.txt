@@ -1,0 +1,7 @@
+to delete knative service:
+kubectl get ksvc
+kubectl delete ksvc [name]
+
+get description:
+kubectl get revisions 
+kubectl describe ksvc [config name]
